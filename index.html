@@ -340,8 +340,8 @@
         <input type="text" id="inputName" placeholder="Anna Müller" />
       </div>
       <div class="field">
-        <label for="inputContact">Contact (phone or email)</label>
-        <input type="text" id="inputContact" placeholder="+41 79 000 00 00 or hello@email.com" />
+        <label for="inputWhatsapp">WhatsApp Number</label>
+        <input type="tel" id="inputWhatsapp" placeholder="+41 79 000 00 00" />
       </div>
       <div class="field">
         <label for="inputMessage">Message (optional)</label>
@@ -363,67 +363,12 @@
   const products = [
     {
       id: 1,
-      emoji: "🛋️",
-      category: "Furniture",
-      name: "Floor Lamp",
-      desc: "Warm-white LED, adjustable arm, barely used. Great for a reading corner.",
-      price: "CHF 35",
-    },
-    {
-      id: 2,
-      emoji: "📚",
-      category: "Books",
-      name: "Design & UX Book Bundle",
-      desc: "6 books including service design, UX research, and systems thinking. All in excellent condition.",
-      price: "CHF 40",
-    },
-    {
-      id: 3,
-      emoji: "🪴",
-      category: "Plants",
-      name: "Pothos (Devil's Ivy)",
-      desc: "Large, trailing pothos in a terracotta pot. Extremely low maintenance, very healthy.",
+      image: "Decathlong_yog_mat.png",
+      category: "Sports & Fitness",
+      name: "Decathlon Yoga Mat",
+      desc: "5mm thick, approx. 180×58cm. Grey, good condition. Comes with carry strap. Great for yoga, pilates, or home workouts.",
       price: "CHF 15",
-    },
-    {
-      id: 4,
-      emoji: "🧴",
-      category: "Electronics",
-      name: "Portable Bluetooth Speaker",
-      desc: "JBL Clip 4, great sound for the size. Charges via USB-C. Minor scratches on clip.",
-      price: "CHF 30",
-    },
-    {
-      id: 5,
-      emoji: "🖼️",
-      category: "Decor",
-      name: "3 Framed Art Prints",
-      desc: "Minimalist black frame, A4 size. Abstract and botanical themes. Match well together.",
-      price: "CHF 25",
-    },
-    {
-      id: 6,
-      emoji: "🎒",
-      category: "Bags",
-      name: "Day Backpack",
-      desc: "14L canvas backpack, fits a 13" laptop. Neutral brown. Used for about 6 months.",
-      price: "CHF 20",
-    },
-    {
-      id: 7,
-      emoji: "☕",
-      category: "Kitchen",
-      name: "French Press + Mugs",
-      desc: "350ml borosilicate French press + 2 ceramic mugs. Morning ritual ready.",
-      price: "CHF 18",
-    },
-    {
-      id: 8,
-      emoji: "🛏️",
-      category: "Bedroom",
-      name: "Duvet + Pillow Set",
-      desc: "IKEA 4-season duvet (240×220cm) + 2 pillows + covers. Freshly washed.",
-      price: "CHF 45",
+      negotiable: true,
     },
   ];
 
@@ -434,11 +379,14 @@
     const grid = document.getElementById('productGrid');
     grid.innerHTML = products.map(p => {
       const isReserved = reservations[p.id];
+      const imgHtml = p.image
+        ? `<img src="${p.image}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block;" />`
+        : `<span class="emoji">${p.emoji || '📦'}</span>`;
       return `
         <div class="card">
-          <div class="card-img">
-            <span class="emoji">${p.emoji}</span>
-            <span class="badge-status ${isReserved ? 'badge-reserved' : 'badge-available'}">
+          <div class="card-img" style="position:relative;background:#e8e4de;">
+            ${imgHtml}
+            <span class="badge-status ${isReserved ? 'badge-reserved' : 'badge-available'}" style="position:absolute;top:12px;right:12px;">
               ${isReserved ? 'Reserved' : 'Available'}
             </span>
           </div>
@@ -447,7 +395,7 @@
             <div class="card-name">${p.name}</div>
             <div class="card-desc">${p.desc}</div>
             <div class="card-footer">
-              <div class="price">${p.price} <span>CHF</span></div>
+              <div class="price">${p.price} ${p.negotiable ? '<span style="color:#E8A838;font-size:0.75rem;font-weight:600;">negotiable</span>' : ''}</div>
               <button class="btn-reserve" onclick="openModal(${p.id})" ${isReserved ? 'disabled' : ''}>
                 ${isReserved ? 'Reserved' : 'Reserve →'}
               </button>
@@ -463,7 +411,7 @@
     const product = products.find(p => p.id === id);
     document.getElementById('modalProductName').textContent = product.name;
     document.getElementById('inputName').value = '';
-    document.getElementById('inputContact').value = '';
+    document.getElementById('inputWhatsapp').value = '';
     document.getElementById('inputMessage').value = '';
     document.getElementById('formView').style.display = 'block';
     document.getElementById('successView').style.display = 'none';
@@ -483,19 +431,29 @@
 
   document.getElementById('submitBtn').addEventListener('click', () => {
     const name = document.getElementById('inputName').value.trim();
-    const contact = document.getElementById('inputContact').value.trim();
+    const whatsapp = document.getElementById('inputWhatsapp').value.trim();
     const message = document.getElementById('inputMessage').value.trim();
 
     if (!name) { document.getElementById('inputName').focus(); return; }
-    if (!contact) { document.getElementById('inputContact').focus(); return; }
+    if (!whatsapp) { document.getElementById('inputWhatsapp').focus(); return; }
 
     const product = products.find(p => p.id === currentProductId);
-    reservations[currentProductId] = { name, contact, message };
+    reservations[currentProductId] = { name, whatsapp, message };
+
+    // Time-based response message (Switzerland time)
+    const now = new Date();
+    const hour = now.getHours();
+    let contactMsg;
+    if (hour < 21) {
+      contactMsg = `The owner will reach out to you on WhatsApp by 9 PM today.`;
+    } else {
+      contactMsg = `You reserved after 9 PM — the owner will contact you on WhatsApp by 10 AM tomorrow morning.`;
+    }
 
     document.getElementById('formView').style.display = 'none';
     document.getElementById('successView').style.display = 'block';
-    document.getElementById('successMsg').textContent =
-      `Thanks, ${name}! "${product.name}" is held for you. I'll reach out to ${contact} to arrange pickup.`;
+    document.getElementById('successMsg').innerHTML =
+      `Thanks, <strong>${name}</strong>! <em>${product.name}</em> is held for you.<br><br>${contactMsg}`;
 
     renderProducts();
   });
