@@ -366,7 +366,7 @@
 
   async function fetchReservations() {
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/reservations?select=product_id`, {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/Moving-out?select=product_id`, {
         headers: {
           'apikey': SUPABASE_KEY,
           'Authorization': `Bearer ${SUPABASE_KEY}`,
@@ -385,7 +385,7 @@
   }
 
   async function saveReservation(product, name, whatsapp, message, reservedAt) {
-    await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
+    await fetch(`${SUPABASE_URL}/rest/v1/Moving-out`, {
       method: 'POST',
       headers: {
         'apikey': SUPABASE_KEY,
