@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sharaya's Moving Sale</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #FAF7F2;
+      --charcoal: #2C2C2C;
+      --amber: #E8A838;
+      --sage: #BECC94;
+      --muted: #6B6560;
+      --card-bg: #FFFFFF;
+      --border: #E8E3DC;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--charcoal);
+      min-height: 100vh;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--charcoal);
+      color: var(--cream);
+      padding: 64px 24px 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 18px,
+        rgba(255,255,255,0.03) 18px,
+        rgba(255,255,255,0.03) 19px
+      );
+    }
+    .hero-tag {
+      display: inline-block;
+      background: var(--amber);
+      color: var(--charcoal);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--amber);
+    }
+    .hero p {
+      font-size: 1rem;
+      color: rgba(250,247,242,0.7);
+      max-width: 480px;
+      margin: 0 auto 10px;
+      line-height: 1.65;
+    }
+    .hero-note {
+      margin-top: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 0.85rem;
+      color: rgba(250,247,242,0.75);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); flex-shrink: 0; }
+
+    /* MAIN */
+    main { max-width: 1100px; margin: 0 auto; padding: 48px 20px 80px; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* GRID */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.09); }
+
+    .card-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      background: #F0EDE8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+    .card-img .emoji { font-size: 3.2rem; }
+    .badge-status {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .badge-available { background: var(--sage); color: #2a3a1e; }
+    .badge-reserved { background: #f0c4c4; color: #7a1e1e; }
+
+    .card-body { padding: 18px 20px 20px; }
+    .card-category {
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .card-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .price {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+    .price span { font-size: 0.8rem; font-weight: 500; color: var(--muted); }
+
+    .btn-reserve {
+      background: var(--charcoal);
+      color: var(--cream);
+      border: none;
+      padding: 9px 18px;
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-reserve:hover { background: #444; }
+    .btn-reserve:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      color: #888;
+    }
+
+    /* MODAL */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(30,25,20,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .overlay.open { display: flex; }
+
+    .modal {
+      background: var(--cream);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 460px;
+      padding: 32px;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 18px;
+      background: none; border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--muted);
+      line-height: 1;
+    }
+    .modal h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.45rem;
+      margin-bottom: 4px;
+    }
+    .modal-product-name {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    .modal-product-name strong { color: var(--charcoal); }
+
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .field input, .field textarea {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      padding: 10px 13px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--charcoal);
+      background: white;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus, .field textarea:focus { border-color: var(--amber); }
+    .field textarea { resize: vertical; min-height: 90px; }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--amber);
+      color: var(--charcoal);
+      border: none;
+      padding: 13px;
+      border-radius: 7px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-submit:hover { background: #d9941f; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+
+    /* SUCCESS */
+    .success-box {
+      display: none;
+      text-align: center;
+      padding: 12px 0 4px;
+    }
+    .success-box .check { font-size: 2.8rem; margin-bottom: 12px; }
+    .success-box h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 8px; }
+    .success-box p { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 32px 20px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 500px) {
+      .hero { padding: 48px 20px 40px; }
+      .modal { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-tag">Moving Sale</div>
+  <h1>Good stuff, <em>moving on.</em></h1>
+  <p>I'm leaving the country and selling everything from my room. All items are well-loved and priced to go.</p>
+  <div class="hero-note">
+    <span class="dot"></span>
+    Reserve an item — I'll get in touch to confirm pickup
+  </div>
+</header>
+
+<main>
+  <div class="section-label">Available Items</div>
+  <div class="grid" id="productGrid"></div>
+</main>
+
+<footer>
+  All items available for pickup in Luzern · Prices negotiable for bundles · Questions? Reserve and leave a message.
+</footer>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+
+    <div id="formView">
+      <h2>Reserve this item</h2>
+      <p class="modal-product-name">You're reserving: <strong id="modalProductName"></strong></p>
+
+      <div class="field">
+        <label for="inputName">Your Name</label>
+        <input type="text" id="inputName" placeholder="Anna Müller" />
+      </div>
+      <div class="field">
+        <label for="inputContact">Contact (phone or email)</label>
+        <input type="text" id="inputContact" placeholder="+41 79 000 00 00 or hello@email.com" />
+      </div>
+      <div class="field">
+        <label for="inputMessage">Message (optional)</label>
+        <textarea id="inputMessage" placeholder="Any questions about the item, pickup time, etc."></textarea>
+      </div>
+
+      <button class="btn-submit" id="submitBtn">Confirm Reservation</button>
+    </div>
+
+    <div class="success-box" id="successView">
+      <div class="check">🎉</div>
+      <h3>You're reserved!</h3>
+      <p id="successMsg"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const products = [
+    {
+      id: 1,
+      emoji: "🛋️",
+      category: "Furniture",
+      name: "Floor Lamp",
+      desc: "Warm-white LED, adjustable arm, barely used. Great for a reading corner.",
+      price: "CHF 35",
+    },
+    {
+      id: 2,
+      emoji: "📚",
+      category: "Books",
+      name: "Design & UX Book Bundle",
+      desc: "6 books including service design, UX research, and systems thinking. All in excellent condition.",
+      price: "CHF 40",
+    },
+    {
+      id: 3,
+      emoji: "🪴",
+      category: "Plants",
+      name: "Pothos (Devil's Ivy)",
+      desc: "Large, trailing pothos in a terracotta pot. Extremely low maintenance, very healthy.",
+      price: "CHF 15",
+    },
+    {
+      id: 4,
+      emoji: "🧴",
+      category: "Electronics",
+      name: "Portable Bluetooth Speaker",
+      desc: "JBL Clip 4, great sound for the size. Charges via USB-C. Minor scratches on clip.",
+      price: "CHF 30",
+    },
+    {
+      id: 5,
+      emoji: "🖼️",
+      category: "Decor",
+      name: "3 Framed Art Prints",
+      desc: "Minimalist black frame, A4 size. Abstract and botanical themes. Match well together.",
+      price: "CHF 25",
+    },
+    {
+      id: 6,
+      emoji: "🎒",
+      category: "Bags",
+      name: "Day Backpack",
+      desc: "14L canvas backpack, fits a 13" laptop. Neutral brown. Used for about 6 months.",
+      price: "CHF 20",
+    },
+    {
+      id: 7,
+      emoji: "☕",
+      category: "Kitchen",
+      name: "French Press + Mugs",
+      desc: "350ml borosilicate French press + 2 ceramic mugs. Morning ritual ready.",
+      price: "CHF 18",
+    },
+    {
+      id: 8,
+      emoji: "🛏️",
+      category: "Bedroom",
+      name: "Duvet + Pillow Set",
+      desc: "IKEA 4-season duvet (240×220cm) + 2 pillows + covers. Freshly washed.",
+      price: "CHF 45",
+    },
+  ];
+
+  const reservations = {};
+  let currentProductId = null;
+
+  function renderProducts() {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = products.map(p => {
+      const isReserved = reservations[p.id];
+      return `
+        <div class="card">
+          <div class="card-img">
+            <span class="emoji">${p.emoji}</span>
+            <span class="badge-status ${isReserved ? 'badge-reserved' : 'badge-available'}">
+              ${isReserved ? 'Reserved' : 'Available'}
+            </span>
+          </div>
+          <div class="card-body">
+            <div class="card-category">${p.category}</div>
+            <div class="card-name">${p.name}</div>
+            <div class="card-desc">${p.desc}</div>
+            <div class="card-footer">
+              <div class="price">${p.price} <span>CHF</span></div>
+              <button class="btn-reserve" onclick="openModal(${p.id})" ${isReserved ? 'disabled' : ''}>
+                ${isReserved ? 'Reserved' : 'Reserve →'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openModal(id) {
+    currentProductId = id;
+    const product = products.find(p => p.id === id);
+    document.getElementById('modalProductName').textContent = product.name;
+    document.getElementById('inputName').value = '';
+    document.getElementById('inputContact').value = '';
+    document.getElementById('inputMessage').value = '';
+    document.getElementById('formView').style.display = 'block';
+    document.getElementById('successView').style.display = 'none';
+    document.getElementById('overlay').classList.add('open');
+    document.getElementById('inputName').focus();
+  }
+
+  document.getElementById('modalClose').addEventListener('click', () => {
+    document.getElementById('overlay').classList.remove('open');
+  });
+
+  document.getElementById('overlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('overlay')) {
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', () => {
+    const name = document.getElementById('inputName').value.trim();
+    const contact = document.getElementById('inputContact').value.trim();
+    const message = document.getElementById('inputMessage').value.trim();
+
+    if (!name) { document.getElementById('inputName').focus(); return; }
+    if (!contact) { document.getElementById('inputContact').focus(); return; }
+
+    const product = products.find(p => p.id === currentProductId);
+    reservations[currentProductId] = { name, contact, message };
+
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('successView').style.display = 'block';
+    document.getElementById('successMsg').textContent =
+      `Thanks, ${name}! "${product.name}" is held for you. I'll reach out to ${contact} to arrange pickup.`;
+
+    renderProducts();
+  });
+
+  renderProducts();
+</script>
+</body>
+</html>
