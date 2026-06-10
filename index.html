@@ -360,6 +360,46 @@
 </div>
 
 <script>
+  // Supabase config
+  const SUPABASE_URL = 'https://tglpaeiouvqoqxkoqlel.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnbHBhZWlvdXZxb3F4a29xbGVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMjMwNTAsImV4cCI6MjA5NjY5OTA1MH0.SyJAk6bxy6PLjGwaPl-7pClxYmLwZF0u5dQjgWV36HI';
+
+  async function fetchReservations() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/reservations?select=product_id`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      const data = await res.json();
+      data.forEach(row => { reservations[row.product_id] = true; });
+      renderProducts();
+    } catch(e) {
+      console.error('Could not load reservations', e);
+    }
+  }
+
+  async function saveReservation(product, name, whatsapp, message, reservedAt) {
+    await fetch(`${SUPABASE_URL}/rest/v1/reservations`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        product_id: product.id,
+        product_name: product.name,
+        buyer_name: name,
+        whatsapp: whatsapp,
+        message: message || '(no message)',
+        reserved_at: reservedAt
+      })
+    });
+  }
+
   const products = [
     {
       id: 1,
@@ -454,7 +494,13 @@
     btn.textContent = 'Sending...';
     btn.disabled = true;
 
+    const reservedAt = new Date().toLocaleString('en-CH', { timeZone: 'Europe/Zurich' });
+
     try {
+      // Save to Supabase (persists across refreshes)
+      await saveReservation(product, name, whatsapp, message, reservedAt);
+
+      // Also notify via Formspree email
       await fetch('https://formspree.io/f/xpqejqvl', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -464,15 +510,15 @@
           item: product.name,
           price: product.price,
           message: message || '(no message)',
-          reserved_at: new Date().toLocaleString('en-CH', { timeZone: 'Europe/Zurich' }),
+          reserved_at: reservedAt,
         })
       });
     } catch (e) {
-      // Silently continue — reservation still marks locally
+      // Silently continue
     }
 
     // Mark reserved locally
-    reservations[currentProductId] = { name, whatsapp, message };
+    reservations[currentProductId] = true;
 
     document.getElementById('formView').style.display = 'none';
     document.getElementById('successView').style.display = 'block';
@@ -482,7 +528,8 @@
     renderProducts();
   });
 
-  renderProducts();
+  // Load reservations from Supabase on page load
+  fetchReservations();
 </script>
 </body>
 </html>
