@@ -429,7 +429,7 @@
     }
   });
 
-  document.getElementById('submitBtn').addEventListener('click', () => {
+  document.getElementById('submitBtn').addEventListener('click', async () => {
     const name = document.getElementById('inputName').value.trim();
     const whatsapp = document.getElementById('inputWhatsapp').value.trim();
     const message = document.getElementById('inputMessage').value.trim();
@@ -438,7 +438,6 @@
     if (!whatsapp) { document.getElementById('inputWhatsapp').focus(); return; }
 
     const product = products.find(p => p.id === currentProductId);
-    reservations[currentProductId] = { name, whatsapp, message };
 
     // Time-based response message (Switzerland time)
     const now = new Date();
@@ -449,6 +448,31 @@
     } else {
       contactMsg = `You reserved after 9 PM — the owner will contact you on WhatsApp by 10 AM tomorrow morning.`;
     }
+
+    // Disable button and show sending state
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    try {
+      await fetch('https://formspree.io/f/xpqejqvl', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          whatsapp: whatsapp,
+          item: product.name,
+          price: product.price,
+          message: message || '(no message)',
+          reserved_at: new Date().toLocaleString('en-CH', { timeZone: 'Europe/Zurich' }),
+        })
+      });
+    } catch (e) {
+      // Silently continue — reservation still marks locally
+    }
+
+    // Mark reserved locally
+    reservations[currentProductId] = { name, whatsapp, message };
 
     document.getElementById('formView').style.display = 'none';
     document.getElementById('successView').style.display = 'block';
