@@ -310,7 +310,7 @@
 <header class="hero">
   <div class="hero-tag">Moving Sale</div>
   <h1>Good stuff, <em>moving on.</em></h1>
-  <p>I'm a Master's student at HSLU, moving abroad after graduation in end of June and selling everything from my room. All items are well-loved and priced to go.</p>
+  <p>I'm leaving the country and selling everything from my room. All items are well-loved and priced to go.</p>
   <div class="hero-note">
     <span class="dot"></span>
     Reserve an item — I'll get in touch to confirm pickup
@@ -414,6 +414,114 @@
       price: "CHF 15",
       negotiable: true,
     },
+    {
+      id: 2,
+      image: "Transparent_Container.png",
+      category: "Storage",
+      name: "Transparent Container",
+      desc: "Sturdy container. Base 30×19cm, Top 34×22cm. Great for organising.",
+      price: "CHF 3",
+      negotiable: false,
+    },
+    {
+      id: 3,
+      image: "Mattress_pump.png",
+      category: "Sports & Fitness",
+      name: "Decathlon Air Mattress with Pump",
+      desc: "Foot pump for inflatable mattresses. Works well, good condition.",
+      price: "CHF 15",
+      negotiable: false,
+    },
+    {
+      id: 4,
+      image: "Container_blue.png",
+      category: "Storage",
+      name: "Blue Container",
+      desc: "IKEA RYKTA box with lid, transparent grey-blue. 36×50×35cm / 44.5L. Great for storage.",
+      price: "CHF 6",
+      negotiable: false,
+    },
+    {
+      id: 5,
+      image: "Decathlon_chain.png",
+      category: "Cycling",
+      name: "Bicycle Lock",
+      desc: "Decathlon lock for bicycle accessories. Comes with one key. Grey, good condition.",
+      price: "CHF 3",
+      negotiable: false,
+    },
+    {
+      id: 6,
+      image: "Gift_wrap.png",
+      category: "Miscellaneous",
+      name: "Gift Wrap",
+      desc: "Barely used, around 2m+ left. Christmas print. Free to a good home!",
+      price: "Free",
+      negotiable: false,
+    },
+    {
+      id: 7,
+      image: "Hangers.png",
+      category: "Miscellaneous",
+      name: "Cloth Hangers",
+      desc: "IKEA clothes hangers, set of 5. White, good condition.",
+      price: "Free",
+      negotiable: false,
+    },
+    {
+      id: 8,
+      image: "ContainerA.png",
+      category: "Storage",
+      name: "Container with Lid (A)",
+      desc: "IKEA TROFAST storage box, white. 42×30×23cm. Clean and in good condition.",
+      price: "CHF 3",
+      negotiable: false,
+    },
+    {
+      id: 9,
+      image: "ContainerB.png",
+      category: "Storage",
+      name: "Container with Lid (B)",
+      desc: "IKEA TROFAST storage box, white. 42×30×23cm. Clean and in good condition.",
+      price: "CHF 3",
+      negotiable: false,
+    },
+    {
+      id: 10,
+      image: "File_pack.png",
+      category: "Office",
+      name: "IKEA File Pack of 2 (Set 1)",
+      desc: "IKEA magazine file pack of 2, metal. Compatible with all models. Great for desk organisation.",
+      price: "CHF 5",
+      negotiable: false,
+    },
+    {
+      id: 11,
+      image: "File_pack2.png",
+      category: "Office",
+      name: "IKEA File Pack of 2 (Set 2)",
+      desc: "IKEA magazine file pack of 2, metal. Compatible with all models. Great for desk organisation.",
+      price: "CHF 5",
+      negotiable: false,
+    },
+    {
+      id: 12,
+      image: "Side_table.png",
+      category: "Furniture",
+      name: "IKEA Side Table - KNARREVIK",
+      desc: "Black, 42×34cm. In new condition, comes with original packaging.",
+      price: "CHF 7",
+      negotiable: false,
+    },
+    {
+      id: 13,
+      image: "Night_lamp.png",
+      category: "Lighting",
+      name: "VINDKAST Table Lamp",
+      desc: "White, 26cm. Side lamp in excellent condition, comes with original packaging.",
+      price: "CHF 10",
+      negotiable: false,
+    },
   ];
 
   const reservations = {};
@@ -488,9 +596,9 @@
     const hour = now.getHours();
     let contactMsg;
     if (hour < 21) {
-      contactMsg = `The owner will reach out to you on WhatsApp by 9 PM today :).`;
+      contactMsg = `The owner will reach out to you on WhatsApp by 9 PM today.`;
     } else {
-      contactMsg = `You reserved after 9 PM — the owner will contact you on WhatsApp by 10 AM tomorrow morning :).`;
+      contactMsg = `You reserved after 9 PM — the owner will contact you on WhatsApp by 10 AM tomorrow morning.`;
     }
 
     // Disable button and show sending state
